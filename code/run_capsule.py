@@ -33,7 +33,7 @@ def run():
         ],
     )
 
-    qc.write_standard_file()
+    qc.write_standard_file(output_directory="/results")
 
 
 if __name__ == "__main__": run()
