@@ -101,12 +101,10 @@ def run():
     )
     url = f"https://{host}/v1/add_qc_evaluation"
     qc_eval = {"key": "value"}
-    print(eval0.model_dump_json())
     post_request_content = {"data_asset_id": "884810cc-ed54-45d8-bd32-de45f9583a68", "qc_evaluation": eval0.model_dump(mode='json')}
     
     response = requests.post(url=url, auth=auth, json=post_request_content)
-    print(response)
-    print(response.text)
+    print(f"Status: {response} with content: {response.text}")
 
 
 if __name__ == "__main__": run()
