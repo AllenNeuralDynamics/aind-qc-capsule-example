@@ -20,6 +20,8 @@ from aws_requests_auth.aws_auth import AWSRequestsAuth
 #  In this case we send the QCEvaluations directly to the DocDB (here the dev DocDB). 
 #  You will need to know your asset's ID in DocDB. This is NOT the UUID of the data asset!! 
 #
+# Please also see the QC documentation https://aind-data-schema.readthedocs.io/en/latest/quality_control.html
+# and send any questions to Dan Birman
 
 # [todo: we'll move this boilerplate communication into aind-data-access-api in the future]
 ## DO NOT EDIT BELOW ##
