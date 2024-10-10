@@ -14,8 +14,8 @@ def run():
 
     t = datetime(2022, 11, 22, 0, 0, 0, tzinfo=timezone.utc)
 
-    s = QCStatus(evaluator="Automated", status=Status.PASS, timestamp=t)
-    sp = QCStatus(evaluator="", status=Status.PENDING, timestamp=t)
+    s = QCStatus(evaluator="Automated", status=Status.PASS, timestamp=t.isoformat())
+    sp = QCStatus(evaluator="", status=Status.PENDING, timestamp=t.isoformat())
 
     # Example of how to use a dictionary to provide options a metric
     drift_value_with_options = {
@@ -101,8 +101,12 @@ def run():
     )
     url = f"https://{host}/v1/add_qc_evaluation"
     qc_eval = {"key": "value"}
-    post_request_content = {"data_asset_id": "33e427dd-1dd8-4062-abb4-0a82d5fc5def", "qc_evaluation": eval0.model_dump()}
+    print(eval0.model_dump_json())
+    post_request_content = {"data_asset_id": "884810cc-ed54-45d8-bd32-de45f9583a68", "qc_evaluation": eval0.model_dump(mode='json')}
+    
     response = requests.post(url=url, auth=auth, json=post_request_content)
+    print(response)
+    print(response.text)
 
 
 if __name__ == "__main__": run()
