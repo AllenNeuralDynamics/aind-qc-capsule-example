@@ -9,15 +9,48 @@ import requests
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 
-def run():
-    """ Make a QC object, dump to json """
+### HOW TO USE
+# This capsule demonstrates how to make QCEvaluations and either:
+# 
+# Preferred workflow, when you generate QC as part of a pipeline:
+#   Attach them to the output of the capsule (in the results), along with any other metadata if you are making a data asset
+#   the results will then be indexed as normal and entered into the DocDB.
+#
+# Alternate workflow, for when you need to generate QC for an existing asset
+#  In this case we send the QCEvaluations directly to the DocDB (here the dev DocDB). 
+#  You will need to know your asset's ID in DocDB. This is NOT the UUID of the data asset!! 
+#
 
+# [todo: we'll move this boilerplate communication into aind-data-access-api in the future]
+## DO NOT EDIT BELOW ##
+session = boto3.Session()
+credentials = session.get_credentials()
+host = "api.allenneuraldynamics-test.org"
+
+auth = AWSRequestsAuth(
+aws_access_key=credentials.access_key,
+aws_secret_access_key=credentials.secret_key,
+aws_token=credentials.token,
+aws_host="api.allenneuraldynamics-test.org",
+aws_region='us-west-2',
+aws_service='execute-api'
+)
+url = f"https://{host}/v1/add_qc_evaluation"
+## DO NOT EDIT ABOVE ##
+
+
+def run():
+    """ Demonstration of building QC """
+
+
+    # Build a timestamp
     t = datetime(2022, 11, 22, 0, 0, 0, tzinfo=timezone.utc)
 
+    # Build some status objects
     s = QCStatus(evaluator="Automated", status=Status.PASS, timestamp=t.isoformat())
     sp = QCStatus(evaluator="", status=Status.PENDING, timestamp=t.isoformat())
 
-    # Example of how to use a dictionary to provide options a metric
+    # Example of how to use a dictionary to provide options a metric, see https://github.com/AllenNeuralDynamics/aind-qcportal-schema
     drift_value_with_options = {
         "value": "",
         "options": ["Low", "Medium", "High"],
@@ -37,6 +70,7 @@ def run():
         "type": "checkbox",
     }
 
+    # Build some evaluations
     eval0 = QCEvaluation(
         name="Drift map",
         description="Qualitative check that drift map shows minimal movement",
@@ -82,27 +116,14 @@ def run():
         ],
     )
 
+    # PREFERRED WORKFLOW
     qc = QualityControl(evaluations=[eval0, eval1, eval2])
-
     qc.write_standard_file(output_directory="/results")
 
-    
-    session = boto3.Session()
-    credentials = session.get_credentials()
-    host = "api.allenneuraldynamics-test.org"
-    
-    auth = AWSRequestsAuth(
-    aws_access_key=credentials.access_key,
-    aws_secret_access_key=credentials.secret_key,
-    aws_token=credentials.token,
-    aws_host="api.allenneuraldynamics-test.org",
-    aws_region='us-west-2',
-    aws_service='execute-api'
-    )
-    url = f"https://{host}/v1/add_qc_evaluation"
-    qc_eval = {"key": "value"}
-    post_request_content = {"data_asset_id": "884810cc-ed54-45d8-bd32-de45f9583a68", "qc_evaluation": eval0.model_dump(mode='json')}
-    
+    # ALTERNATE WORKFLOW
+
+    # Repeat as needed for multiple evaluations, or put them into a list
+    post_request_content = {"data_asset_id": "884810cc-ed54-45d8-bd32-de45f9583a68", "qc_evaluation": eval0.model_dump(mode='json')}    
     response = requests.post(url=url, auth=auth, json=post_request_content)
     print(f"Status: {response} with content: {response.text}")
 
