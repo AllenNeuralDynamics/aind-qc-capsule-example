@@ -14,11 +14,13 @@ from aws_requests_auth.aws_auth import AWSRequestsAuth
 # 
 # Preferred workflow, when you generate QC as part of a pipeline:
 #   Attach them to the output of the capsule (in the results), along with any other metadata if you are making a data asset
-#   the results will then be indexed as normal and entered into the DocDB.
+#   the results will then be indexed as normal and entered into the DocDB. Figures should be placed in a figure folder
+#   or uploaded to FigURL.
 #
 # Alternate workflow, for when you need to generate QC for an existing asset
-#  In this case we send the QCEvaluations directly to the DocDB (here the dev DocDB). 
-#  You will need to know your asset's ID in DocDB. This is NOT the UUID of the data asset!! 
+#   In this case we send the QCEvaluations directly to the DocDB (here the dev DocDB). 
+#   You will need to know your asset's ID in DocDB. This is NOT the UUID of the data asset!! 
+#   In this workflow, it's best to upload figures to FigURL
 #
 # Please also see the QC documentation https://aind-data-schema.readthedocs.io/en/latest/quality_control.html
 # and send any questions to Dan Birman
