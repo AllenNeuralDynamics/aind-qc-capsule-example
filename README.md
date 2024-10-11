@@ -1,3 +1,3 @@
-# aind-capsule-template
+# QC capsule example
 
-Basic structure of a capsule to be customized as needed.
+Please see the QC documentation https://aind-data-schema.readthedocs.io/en/latest/quality_control.html for details.
